@@ -7,6 +7,8 @@ import { languageAlternates } from "@/lib/metadata";
 import { client } from "@/sanity/lib/client";
 
 const query = `*[_type == "mediaKitPage"] | order(_updatedAt desc)[0]{
+  _id,
+  _updatedAt,  
   bio_en,
   bio_zh,
   pressPhotos[]{asset->{url, originalFilename}},
