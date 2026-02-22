@@ -7,7 +7,7 @@ import { RichText } from "@/components/rich-text";
 import { localizedBody, localizedText } from "@/lib/content";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 import { languageAlternates } from "@/lib/metadata";
-import { getExpeditionBySlug, getExpeditionSlugs } from "@/lib/sanity/api";
+import { getExhibitionBySlug, getExhibitionSlugs } from "@/lib/sanity/api";
 
 function formatDateRange(startDate?: string, endDate?: string) {
   if (!startDate && !endDate) {
@@ -22,7 +22,7 @@ function formatDateRange(startDate?: string, endDate?: string) {
 }
 
 export async function generateStaticParams() {
-  const slugs = await getExpeditionSlugs();
+  const slugs = await getExhibitionSlugs();
   return locales.flatMap((lang) => slugs.map((slug) => ({ lang, slug })));
 }
 
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: { lang: string; slu
     return {};
   }
 
-  const expedition = await getExpeditionBySlug(params.slug);
+  const expedition = await getExhibitionBySlug(params.slug);
 
   if (!expedition) {
     return {
@@ -55,7 +55,7 @@ export default async function ExpeditionDetailPage({ params }: { params: { lang:
   }
 
   const lang = params.lang as Locale;
-  const expedition = await getExpeditionBySlug(params.slug);
+  const expedition = await getExhibitionBySlug(params.slug);
 
   if (!expedition) {
     notFound();
