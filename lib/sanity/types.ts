@@ -9,15 +9,21 @@ export type SanityImageAsset = {
   _type: "image";
 };
 
+export type SanityImage = {
+  asset?: {
+    url?: string;
+    metadata?: {
+      dimensions?: { width?: number; height?: number };
+      lqip?: string;
+    };
+  };
+  alt?: string;
+};
+
 export type ExternalLink = {
   _key: string;
   label?: string;
   url?: string;
-};
-
-export type DateRange = {
-  startDate?: string;
-  endDate?: string;
 };
 
 export type BaseContent = {
@@ -40,6 +46,16 @@ export type BaseContent = {
   externalLinks?: ExternalLink[];
 };
 
+export type HomePage = {
+  _id: string;
+  _updatedAt?: string;
+  title_en?: string;
+  title_zh?: string;
+  intro_en?: PortableTextBlock[] | string;
+  intro_zh?: PortableTextBlock[] | string;
+  heroImage?: SanityImage;
+};
+
 export type Project = BaseContent;
 
 export type ResearchPost = BaseContent;
@@ -50,31 +66,21 @@ export type PressItem = BaseContent & {
   publishDate?: string;
   quote_en?: string;
   quote_zh?: string;
-  relatedProjects?: Array<{
+  relatedProjects?: Project[];
+};
+
+export type Exhibition = BaseContent & {
+  dateRange?: {
+    startDate?: string;
+    endDate?: string;
+  };
+  venue?: string;
+  collaborators?: string[];
+  relatedWorks?: Array<{
     _id: string;
     slug?: SanitySlug;
     title_en: string;
     title_zh: string;
-    _type: "project";
+    _type: "project" | "researchPost";
   }>;
-};
-
-export type RelatedWorkRef = {
-  _id: string;
-  slug?: SanitySlug;
-  title_en: string;
-  title_zh: string;
-  _type: "project" | "researchPost";
-};
-
-export type Exhibition = BaseContent & {
-  // 展览核心信息
-  venue?: string;
-  collaborators?: string[];
-
-  // 展期
-  dateRange?: DateRange;
-
-  // 关联作品（项目 / 研究文章）
-  relatedWorks?: RelatedWorkRef[];
 };

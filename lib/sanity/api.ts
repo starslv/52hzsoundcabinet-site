@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { sanityClient } from "@/lib/sanity/client";
 import {
+  homePageQuery,
   exhibitionBySlugQuery,
   exhibitionSlugsQuery,
   exhibitionsQuery,
@@ -10,9 +11,13 @@ import {
   projectsQuery,
   researchPostBySlugQuery,
   researchPostSlugsQuery,
-  researchPostsQuery,
+  researchPostsQuery
 } from "@/lib/sanity/queries";
-import type { Exhibition, PressItem, Project, ResearchPost } from "@/lib/sanity/types";
+import type { Exhibition, HomePage, PressItem, Project, ResearchPost } from "@/lib/sanity/types";
+
+export const getHomePage = cache(async () => {
+  return sanityClient.fetch<HomePage | null>(homePageQuery);
+});
 
 export const getProjects = cache(async () => {
   return sanityClient.fetch<Project[]>(projectsQuery);

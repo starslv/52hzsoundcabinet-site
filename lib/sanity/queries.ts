@@ -20,47 +20,93 @@ const baseFields = `
   externalLinks
 `;
 
-export const projectsQuery = groq`*[_type == "project"] | order(year desc, _createdAt desc) {${baseFields}}`;
+//
+// ✅ HOMEPAGE (Singleton-like, newest published)
+//
+export const homePageQuery = groq`
+  *[_type == "homePage"] | order(_updatedAt desc)[0]{
+    _id,
+    _updatedAt,
+    title_en,
+    title_zh,
+    intro_en,
+    intro_zh,
+    heroImage{
+      asset->{url, metadata{dimensions, lqip}},
+      alt
+    }
+  }
+`;
 
-export const projectBySlugQuery = groq`*[_type == "project" && slug.current == $slug][0] {${baseFields}}`;
+//
+// 🎛 PROJECTS
+//
+export const projectsQuery = groq`
+  *[_type == "project"] | order(year desc, _createdAt desc) {${baseFields}}
+`;
 
-export const projectSlugsQuery = groq`*[_type == "project" && defined(slug.current)][].slug.current`;
+export const projectBySlugQuery = groq`
+  *[_type == "project" && slug.current == $slug][0] {${baseFields}}
+`;
 
-export const researchPostsQuery = groq`*[_type == "researchPost"] | order(year desc, _createdAt desc) {${baseFields}}`;
+export const projectSlugsQuery = groq`
+  *[_type == "project" && defined(slug.current)][].slug.current
+`;
 
-export const researchPostBySlugQuery = groq`*[_type == "researchPost" && slug.current == $slug][0] {${baseFields}}`;
+//
+// 🧪 RESEARCH
+//
+export const researchPostsQuery = groq`
+  *[_type == "researchPost"] | order(year desc, _createdAt desc) {${baseFields}}
+`;
 
-export const researchPostSlugsQuery = groq`*[_type == "researchPost" && defined(slug.current)][].slug.current`;
+export const researchPostBySlugQuery = groq`
+  *[_type == "researchPost" && slug.current == $slug][0] {${baseFields}}
+`;
 
-export const pressItemsQuery = groq`*[_type == "pressItem"] | order(publishDate desc, _createdAt desc) {
-  ${baseFields},
-  outlet,
-  url,
-  publishDate,
-  quote_en,
-  quote_zh,
-  relatedProjects[]->{_id, _type, slug, title_en, title_zh}
-}`;
+export const researchPostSlugsQuery = groq`
+  *[_type == "researchPost" && defined(slug.current)][].slug.current
+`;
+
+//
+// 📰 PRESS
+//
+export const pressItemsQuery = groq`
+  *[_type == "pressItem"] | order(publishDate desc, _createdAt desc) {
+    ${baseFields},
+    outlet,
+    url,
+    publishDate,
+    quote_en,
+    quote_zh,
+    relatedProjects[]->{_id, _type, slug, title_en, title_zh}
+  }
+`;
 
 //
 // 🎨 EXHIBITIONS（展览）
 //
+export const exhibitionsQuery = groq`
+  *[_type == "exhibition"]
+  | order(coalesce(dateRange.startDate, year) desc, _createdAt desc) {
+    ${baseFields},
+    venue,
+    collaborators,
+    dateRange,
+    relatedWorks[]->{_id, _type, slug, title_en, title_zh}
+  }
+`;
 
-export const exhibitionsQuery = groq`*[_type == "exhibition"] 
-| order(coalesce(dateRange.startDate, year) desc, _createdAt desc) {
-  ${baseFields},
-  venue,
-  collaborators,
-  dateRange,
-  relatedWorks[]->{_id, _type, slug, title_en, title_zh}
-}`;
+export const exhibitionBySlugQuery = groq`
+  *[_type == "exhibition" && slug.current == $slug][0] {
+    ${baseFields},
+    venue,
+    collaborators,
+    dateRange,
+    relatedWorks[]->{_id, _type, slug, title_en, title_zh}
+  }
+`;
 
-export const exhibitionBySlugQuery = groq`*[_type == "exhibition" && slug.current == $slug][0] {
-  ${baseFields},
-  venue,
-  collaborators,
-  dateRange,
-  relatedWorks[]->{_id, _type, slug, title_en, title_zh}
-}`;
-
-export const exhibitionSlugsQuery = groq`*[_type == "exhibition" && defined(slug.current)][].slug.current`;
+export const exhibitionSlugsQuery = groq`
+  *[_type == "exhibition" && defined(slug.current)][].slug.current
+`;
