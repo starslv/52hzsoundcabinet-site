@@ -1,24 +1,42 @@
 import { cache } from "react";
 import { sanityClient } from "@/lib/sanity/client";
+
 import {
   homePageQuery,
-  exhibitionBySlugQuery,
-  exhibitionSlugsQuery,
-  exhibitionsQuery,
-  pressItemsQuery,
+  projectsQuery,
   projectBySlugQuery,
   projectSlugsQuery,
-  projectsQuery,
+  researchPostsQuery,
   researchPostBySlugQuery,
   researchPostSlugsQuery,
-  researchPostsQuery
+  pressItemsQuery,
+  exhibitionsQuery,
+  exhibitionBySlugQuery,
+  exhibitionSlugsQuery,
+  publicationsQuery,
+  publicationBySlugQuery,
+  publicationSlugsQuery
 } from "@/lib/sanity/queries";
-import type { Exhibition, HomePage, PressItem, Project, ResearchPost } from "@/lib/sanity/types";
 
+import type {
+  HomePage,
+  Project,
+  ResearchPost,
+  PressItem,
+  Exhibition,
+  Publication
+} from "@/lib/sanity/types";
+
+//
+// 🏠 HOMEPAGE
+//
 export const getHomePage = cache(async () => {
   return sanityClient.fetch<HomePage | null>(homePageQuery);
 });
 
+//
+// 🎛 PROJECTS
+//
 export const getProjects = cache(async () => {
   return sanityClient.fetch<Project[]>(projectsQuery);
 });
@@ -31,6 +49,9 @@ export const getProjectSlugs = cache(async () => {
   return sanityClient.fetch<string[]>(projectSlugsQuery);
 });
 
+//
+// 🧪 RESEARCH
+//
 export const getResearchPosts = cache(async () => {
   return sanityClient.fetch<ResearchPost[]>(researchPostsQuery);
 });
@@ -43,10 +64,16 @@ export const getResearchPostSlugs = cache(async () => {
   return sanityClient.fetch<string[]>(researchPostSlugsQuery);
 });
 
+//
+// 📰 PRESS
+//
 export const getPressItems = cache(async () => {
   return sanityClient.fetch<PressItem[]>(pressItemsQuery);
 });
 
+//
+// 🎨 EXHIBITIONS
+//
 export const getExhibitions = cache(async () => {
   return sanityClient.fetch<Exhibition[]>(exhibitionsQuery);
 });
@@ -57,4 +84,19 @@ export const getExhibitionBySlug = cache(async (slug: string) => {
 
 export const getExhibitionSlugs = cache(async () => {
   return sanityClient.fetch<string[]>(exhibitionSlugsQuery);
+});
+
+//
+// 📚 PUBLICATIONS
+//
+export const getPublications = cache(async () => {
+  return sanityClient.fetch<Publication[]>(publicationsQuery);
+});
+
+export const getPublicationBySlug = cache(async (slug: string) => {
+  return sanityClient.fetch<Publication | null>(publicationBySlugQuery, { slug });
+});
+
+export const getPublicationSlugs = cache(async () => {
+  return sanityClient.fetch<string[]>(publicationSlugsQuery);
 });
