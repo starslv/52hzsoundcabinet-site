@@ -12,7 +12,7 @@ const navItems = [
   { href: "/projects", label: "Projects" },
   { href: "/research", label: "Research" },
   { href: "/immersive-performances", label: "Immersive Performances" },
-  { href: "/field-expeditions", label: "Field Expeditions" },
+  { href: "/exhibitions", label: "Exhibitions" },
   { href: "/press", label: "Press" },
   { href: "/publications", label: "Publications" },
   { href: "/lectures", label: "Lectures" },

@@ -1,18 +1,18 @@
 import { cache } from "react";
 import { sanityClient } from "@/lib/sanity/client";
 import {
-  expeditionBySlugQuery,
-  expeditionSlugsQuery,
-  expeditionsQuery,
+  exhibitionBySlugQuery,
+  exhibitionSlugsQuery,
+  exhibitionsQuery,
   pressItemsQuery,
   projectBySlugQuery,
   projectSlugsQuery,
   projectsQuery,
   researchPostBySlugQuery,
   researchPostSlugsQuery,
-  researchPostsQuery
+  researchPostsQuery,
 } from "@/lib/sanity/queries";
-import type { Expedition, PressItem, Project, ResearchPost } from "@/lib/sanity/types";
+import type { Exhibition, PressItem, Project, ResearchPost } from "@/lib/sanity/types";
 
 export const getProjects = cache(async () => {
   return sanityClient.fetch<Project[]>(projectsQuery);
@@ -42,14 +42,14 @@ export const getPressItems = cache(async () => {
   return sanityClient.fetch<PressItem[]>(pressItemsQuery);
 });
 
-export const getExpeditions = cache(async () => {
-  return sanityClient.fetch<Expedition[]>(expeditionsQuery);
+export const getExhibitions = cache(async () => {
+  return sanityClient.fetch<Exhibition[]>(exhibitionsQuery);
 });
 
-export const getExpeditionBySlug = cache(async (slug: string) => {
-  return sanityClient.fetch<Expedition | null>(expeditionBySlugQuery, { slug });
+export const getExhibitionBySlug = cache(async (slug: string) => {
+  return sanityClient.fetch<Exhibition | null>(exhibitionBySlugQuery, { slug });
 });
 
-export const getExpeditionSlugs = cache(async () => {
-  return sanityClient.fetch<string[]>(expeditionSlugsQuery);
+export const getExhibitionSlugs = cache(async () => {
+  return sanityClient.fetch<string[]>(exhibitionSlugsQuery);
 });

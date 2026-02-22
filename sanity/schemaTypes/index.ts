@@ -3,7 +3,7 @@ import { homePageType } from "./documents/homePage";
 import { projectType } from "./documents/project";
 import { researchPostType } from "./documents/researchPost";
 import { pressItemType } from "./documents/pressItem";
-import { expeditionType } from "./documents/expedition";
+import { exhibitionType } from "./documents/expedition";
 
 import { performanceType } from "./documents/performance";
 import { publicationType } from "./documents/publication";
@@ -25,7 +25,7 @@ homePageType,
   projectType,
   researchPostType,
   pressItemType,
-  expeditionType,
+  exhibitionType,
   performanceType,
   publicationType,
   lectureType,

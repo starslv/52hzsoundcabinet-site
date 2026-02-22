@@ -31,7 +31,7 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("project").title("Projects"),
       S.documentTypeListItem("researchPost").title("Research"),
       S.documentTypeListItem("performance").title("Immersive Performances"),
-      S.documentTypeListItem("expedition").title("Field Expeditions"),
+      S.documentTypeListItem("exhibition").title("Exhibitions"),
       S.documentTypeListItem("pressItem").title("Press"),
       S.documentTypeListItem("publication").title("Publications"),
       S.documentTypeListItem("lecture").title("Lectures"),

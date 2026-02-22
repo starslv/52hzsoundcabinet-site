@@ -42,22 +42,25 @@ export const pressItemsQuery = groq`*[_type == "pressItem"] | order(publishDate 
   relatedProjects[]->{_id, _type, slug, title_en, title_zh}
 }`;
 
-export const expeditionsQuery = groq`*[_type == "expedition"] | order(dateRange.startDate desc, year desc, _createdAt desc) {
+//
+// 🎨 EXHIBITIONS（展览）
+//
+
+export const exhibitionsQuery = groq`*[_type == "exhibition"] 
+| order(coalesce(dateRange.startDate, year) desc, _createdAt desc) {
   ${baseFields},
+  venue,
+  collaborators,
   dateRange,
-  region,
-  gearList,
-  audioThemes,
-  relatedOutputs[]->{_id, _type, slug, title_en, title_zh}
+  relatedWorks[]->{_id, _type, slug, title_en, title_zh}
 }`;
 
-export const expeditionBySlugQuery = groq`*[_type == "expedition" && slug.current == $slug][0] {
+export const exhibitionBySlugQuery = groq`*[_type == "exhibition" && slug.current == $slug][0] {
   ${baseFields},
+  venue,
+  collaborators,
   dateRange,
-  region,
-  gearList,
-  audioThemes,
-  relatedOutputs[]->{_id, _type, slug, title_en, title_zh}
+  relatedWorks[]->{_id, _type, slug, title_en, title_zh}
 }`;
 
-export const expeditionSlugsQuery = groq`*[_type == "expedition" && defined(slug.current)][].slug.current`;
+export const exhibitionSlugsQuery = groq`*[_type == "exhibition" && defined(slug.current)][].slug.current`;
