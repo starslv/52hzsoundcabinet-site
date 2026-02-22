@@ -5,8 +5,14 @@ export type SanitySlug = {
 };
 
 export type SanityImageAsset = {
-  _ref?: string;
   _type: "image";
+  // Sanity image field usually stores a reference object:
+  // { _type: "image", asset: { _ref: "image-...", _type: "reference" }, ... }
+  asset?: {
+    _ref: string;
+    _type: "reference";
+  };
+  alt?: string;
 };
 
 export type SanityImage = {
@@ -83,4 +89,19 @@ export type Exhibition = BaseContent & {
     title_zh: string;
     _type: "project" | "researchPost";
   }>;
+};
+
+export type SanityFileAsset = {
+  asset?: {
+    url?: string;
+    originalFilename?: string;
+  };
+};
+
+export type Publication = BaseContent & {
+  publishDate?: string;
+  outlet?: string;
+  url?: string;
+  authors?: string[];
+  file?: SanityFileAsset;
 };
