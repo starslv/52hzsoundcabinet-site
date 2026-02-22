@@ -7,7 +7,6 @@ import { dataset, projectId } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
 
-// 这些类型我们要当作“单页（Singleton）”处理：只能编辑固定 documentId 的那一条
 const singletonTypes = ["homePage", "aboutPage", "mediaKitPage", "contactPage"];
 
 export default defineConfig({
@@ -18,24 +17,26 @@ export default defineConfig({
   schema: {
     types: schemaTypes,
 
-    // 1) 隐藏“新建模板”（Create new）里出现的 singleton 类型
+    // Hide singleton templates from the "Create new" menu
     templates: (templates) =>
-      templates.filter(({ schemaType }) => !singletonTypes.includes(schemaType)),
+      templates.filter((t) => !singletonTypes.includes((t as any).schemaType)),
   },
 
   plugins: [structureTool({ structure })],
 
-  // 2) 再加一层保险：从“新建”菜单里彻底移除 singleton 类型（不同入口都管住）
   document: {
+    // Remove singleton types from global "New document" options (type-safe fallback via `as any`)
     newDocumentOptions: (prev, ctx) => {
-      // 全局新建入口（+ Create）
       if (ctx.creationContext.type === "global") {
-        return prev.filter((opt) => !singletonTypes.includes(opt.schemaType));
+        return prev.filter((opt) => {
+          const schemaType = (opt as any).schemaType;
+          return !singletonTypes.includes(schemaType);
+        });
       }
       return prev;
     },
 
-    // 3) 禁用 singleton 的 duplicate / delete，防止再次生成多条导致冲突
+    // Prevent duplicate/delete on singleton docs to avoid accidental extra docs
     actions: (prev, ctx) => {
       if (singletonTypes.includes(ctx.schemaType)) {
         return prev.filter(
@@ -46,7 +47,5 @@ export default defineConfig({
     },
   },
 
-  // NOTE:
-  // We intentionally disable @sanity/vision for now due to React/Next compatibility
-  // issues in this project setup. We can re-enable it later after aligning versions.
+  // Vision intentionally disabled for now (React/Next compat issues in this setup)
 });
