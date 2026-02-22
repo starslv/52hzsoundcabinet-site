@@ -15,6 +15,11 @@ export type ExternalLink = {
   url?: string;
 };
 
+export type DateRange = {
+  startDate?: string;
+  endDate?: string;
+};
+
 export type BaseContent = {
   _id: string;
   _createdAt: string;
@@ -45,22 +50,31 @@ export type PressItem = BaseContent & {
   publishDate?: string;
   quote_en?: string;
   quote_zh?: string;
-  relatedProjects?: Project[];
-};
-
-export type Expedition = BaseContent & {
-  dateRange?: {
-    startDate?: string;
-    endDate?: string;
-  };
-  region?: string;
-  gearList?: string[];
-  audioThemes?: string[];
-  relatedOutputs?: Array<{
+  relatedProjects?: Array<{
     _id: string;
     slug?: SanitySlug;
     title_en: string;
     title_zh: string;
-    _type: "project" | "researchPost";
+    _type: "project";
   }>;
+};
+
+export type RelatedWorkRef = {
+  _id: string;
+  slug?: SanitySlug;
+  title_en: string;
+  title_zh: string;
+  _type: "project" | "researchPost";
+};
+
+export type Exhibition = BaseContent & {
+  // 展览核心信息
+  venue?: string;
+  collaborators?: string[];
+
+  // 展期
+  dateRange?: DateRange;
+
+  // 关联作品（项目 / 研究文章）
+  relatedWorks?: RelatedWorkRef[];
 };
