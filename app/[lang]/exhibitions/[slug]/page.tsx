@@ -10,105 +10,130 @@ import { languageAlternates } from "@/lib/metadata";
 import { getExhibitionBySlug, getExhibitionSlugs } from "@/lib/sanity/api";
 
 function formatDateRange(startDate?: string, endDate?: string) {
-  if (!startDate && !endDate) {
-    return "";
-  }
-
-  if (startDate && endDate) {
-    return `${startDate} - ${endDate}`;
-  }
-
+  if (!startDate && !endDate) return "";
+  if (startDate && endDate) return `${startDate} - ${endDate}`;
   return startDate || endDate || "";
 }
+
+type RelatedWorkRef = {
+  _id: string;
+  _type: "project" | "researchPost";
+  slug?: { current?: string };
+  title_en?: string;
+  title_zh?: string;
+  summary_en?: string;
+  summary_zh?: string;
+};
 
 export async function generateStaticParams() {
   const slugs = await getExhibitionSlugs();
   return locales.flatMap((lang) => slugs.map((slug) => ({ lang, slug })));
 }
 
-export async function generateMetadata({ params }: { params: { lang: string; slug: string } }): Promise<Metadata> {
-  if (!isLocale(params.lang)) {
-    return {};
-  }
+export async function generateMetadata({
+  params,
+}: {
+  params: { lang: string; slug: string };
+}): Promise<Metadata> {
+  if (!isLocale(params.lang)) return {};
 
-  const expedition = await getExhibitionBySlug(params.slug);
+  const lang = params.lang as Locale;
+  const exhibition = await getExhibitionBySlug(params.slug);
 
-  if (!expedition) {
-    return {
-      title: "Not Found"
-    };
+  if (!exhibition) {
+    return { title: "Not Found" };
   }
 
   return {
-    title: localizedText(expedition, "title", params.lang as Locale),
-    description: localizedText(expedition, "summary", params.lang as Locale),
-    alternates: languageAlternates(params.lang as Locale, `/field-expeditions/${params.slug}`),
+    title: localizedText(exhibition, "title", lang),
+    description: localizedText(exhibition, "summary", lang),
+    alternates: languageAlternates(lang, `/exhibitions/${params.slug}`),
     openGraph: {
-      url: `https://52hzsoundcabinet.com/${params.lang}/field-expeditions/${params.slug}`
-    }
+      url: `https://52hzsoundcabinet.com/${params.lang}/exhibitions/${params.slug}`,
+    },
   };
 }
 
-export default async function ExpeditionDetailPage({ params }: { params: { lang: string; slug: string } }) {
-  if (!isLocale(params.lang)) {
-    notFound();
-  }
+export default async function ExhibitionDetailPage({
+  params,
+}: {
+  params: { lang: string; slug: string };
+}) {
+  if (!isLocale(params.lang)) notFound();
 
   const lang = params.lang as Locale;
-  const expedition = await getExhibitionBySlug(params.slug);
+  const exhibition = await getExhibitionBySlug(params.slug);
 
-  if (!expedition) {
-    notFound();
-  }
+  if (!exhibition) notFound();
 
-  const title = localizedText(expedition, "title", lang);
-  const body = localizedBody(expedition, lang);
+  const title = localizedText(exhibition, "title", lang);
+  const body = localizedBody(exhibition, lang);
+
+  const dateText = formatDateRange(exhibition.dateRange?.startDate, exhibition.dateRange?.endDate);
+  const relatedWorks = (exhibition.relatedWorks ?? []) as RelatedWorkRef[];
 
   return (
     <article>
       <h1>{title}</h1>
+
       <p className="meta-inline">
-        {expedition.region ? <span>{expedition.region}</span> : null}
-        <span>{formatDateRange(expedition.dateRange?.startDate, expedition.dateRange?.endDate)}</span>
+        {exhibition.venue ? <span>{exhibition.venue}</span> : null}
+        {exhibition.location ? <span>{exhibition.location}</span> : null}
+        {exhibition.year ? <span>{String(exhibition.year)}</span> : null}
+        {dateText ? <span>{dateText}</span> : null}
       </p>
-      <CoverImage image={expedition.coverImage} title={title} />
-      <p>{localizedText(expedition, "summary", lang)}</p>
+
+      <CoverImage image={exhibition.coverImage} title={title} />
+
+      {localizedText(exhibition, "summary", lang) ? <p>{localizedText(exhibition, "summary", lang)}</p> : null}
+
       <RichText value={body} />
-      <Gallery images={expedition.galleryImages} title={title} />
-      <VideoEmbeds urls={expedition.videoEmbeds} />
+
+      <Gallery images={exhibition.galleryImages} title={title} />
+      <VideoEmbeds urls={exhibition.videoEmbeds} />
 
       <section className="panel">
-        <h2>{lang === "zh" ? "探险信息" : "Expedition Details"}</h2>
+        <h2>{lang === "zh" ? "展览信息" : "Exhibition Details"}</h2>
+
         <dl className="meta-list">
-          {expedition.gearList?.length ? (
+          {exhibition.venue ? (
             <div>
-              <dt>{lang === "zh" ? "设备清单" : "Gear List"}</dt>
-              <dd>{expedition.gearList.join(", ")}</dd>
+              <dt>{lang === "zh" ? "场馆" : "Venue"}</dt>
+              <dd>{exhibition.venue}</dd>
             </div>
           ) : null}
-          {expedition.audioThemes?.length ? (
+
+          {exhibition.collaborators?.length ? (
             <div>
-              <dt>{lang === "zh" ? "声音主题" : "Audio Themes"}</dt>
-              <dd>{expedition.audioThemes.join(", ")}</dd>
+              <dt>{lang === "zh" ? "合作方" : "Collaborators"}</dt>
+              <dd>{exhibition.collaborators.join(", ")}</dd>
             </div>
           ) : null}
-          {expedition.relatedOutputs?.length ? (
+
+          {dateText ? (
             <div>
-              <dt>{lang === "zh" ? "相关成果" : "Related Outputs"}</dt>
+              <dt>{lang === "zh" ? "展期" : "Dates"}</dt>
+              <dd>{dateText}</dd>
+            </div>
+          ) : null}
+
+          {relatedWorks.length ? (
+            <div>
+              <dt>{lang === "zh" ? "相关作品" : "Related Works"}</dt>
               <dd>
-                {expedition.relatedOutputs.map((output, index) => {
-                  const hrefBase = output._type === "project" ? "projects" : "research";
+                {relatedWorks.map((work: RelatedWorkRef, index: number) => {
+                  const hrefBase = work._type === "project" ? "projects" : "research";
+                  const label =
+                    lang === "zh" ? work.title_zh || work.title_en : work.title_en || work.title_zh;
 
                   return (
-                    <span key={output._id}>
-                      {output.slug?.current ? (
-                        <Link href={`/${lang}/${hrefBase}/${output.slug.current}`}>
-                          {localizedText(output, "title", lang)}
-                        </Link>
+                    <span key={work._id}>
+                      {work.slug?.current ? (
+                        <Link href={`/${lang}/${hrefBase}/${work.slug.current}`}>{label}</Link>
                       ) : (
-                        localizedText(output, "title", lang)
+                        label
                       )}
-                      {index < expedition.relatedOutputs!.length - 1 ? ", " : ""}
+                      {index < relatedWorks.length - 1 ? ", " : ""}
                     </span>
                   );
                 })}
@@ -117,7 +142,8 @@ export default async function ExpeditionDetailPage({ params }: { params: { lang:
           ) : null}
         </dl>
       </section>
-      <ExternalLinks links={expedition.externalLinks} />
+
+      <ExternalLinks links={exhibition.externalLinks} />
     </article>
   );
 }
