@@ -1,0 +1,152 @@
+:root {
+  --bg: #f9f8f4;
+  --surface: #ffffff;
+  --text: #1a1a1a;
+  --muted: #5b5b5b;
+  --line: #d8d3c8;
+  --accent: #0b5a53;
+  --max-width: 72rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Instrument Sans", "Avenir Next", "Helvetica Neue", "Segoe UI", sans-serif;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent);
+}
+
+.site-shell {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.site-header {
+  display: grid;
+  gap: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 1.2rem;
+  margin-bottom: 2.2rem;
+}
+
+.site-title {
+  margin: 0;
+  font-family: "Fraunces", "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(1.5rem, 2vw + 1rem, 2.2rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.site-tagline {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.site-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.1rem;
+  font-size: 0.95rem;
+}
+
+main {
+  display: grid;
+  gap: 1.6rem;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+  margin: 0;
+}
+
+h1 {
+  font-family: "Fraunces", "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(1.9rem, 2vw + 1.1rem, 3rem);
+  font-weight: 500;
+}
+
+h2 {
+  font-family: "Fraunces", "Iowan Old Style", "Times New Roman", serif;
+  font-size: clamp(1.2rem, 1vw + 0.8rem, 1.7rem);
+  font-weight: 500;
+  margin-top: 1.2rem;
+}
+
+p,
+li,
+dd,
+dt {
+  font-size: 1rem;
+}
+
+.lead {
+  font-size: 1.1rem;
+  max-width: 64ch;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 1.1rem;
+}
+
+.meta-list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.meta-list div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+dt {
+  font-weight: 600;
+}
+
+dd {
+  margin: 0;
+  color: var(--muted);
+}
+
+.project-list {
+  display: grid;
+  gap: 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  padding: 1rem;
+}
+
+.site-footer {
+  margin-top: 3rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
