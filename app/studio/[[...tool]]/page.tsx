@@ -1,8 +1,8 @@
-import dynamic from "next/dynamic";
+"use client";
 
-// Important: import the client wrapper, not `sanity`, and disable SSR
-const StudioClient = dynamic(() => import("./StudioClient"), { ssr: false });
+import { NextStudio } from "next-sanity/studio";
+import config from "@/sanity.config";
 
 export default function StudioPage() {
-  return <StudioClient />;
+  return <NextStudio config={config} />;
 }
