@@ -7,7 +7,7 @@ import { dataset, projectId } from "./sanity/env";
 import { schemaTypes } from "./sanity/schemaTypes";
 import { structure } from "./sanity/structure";
 
-const singletonTypes = ["homePage", "aboutPage", "mediaKitPage", "contactPage"];
+const singletonTypes = ["homePage", "aboutPage", "contactPage"];
 
 export default defineConfig({
   basePath: "/studio",

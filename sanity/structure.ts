@@ -16,11 +16,6 @@ export const structure: StructureResolver = (S) =>
         .child(S.editor().schemaType("aboutPage").documentId("aboutPage").title("About")),
 
       S.listItem()
-        .title("Media Kit")
-        .id("mediaKitPageSingleton")
-        .child(S.editor().schemaType("mediaKitPage").documentId("mediaKitPage").title("Media Kit")),
-
-      S.listItem()
         .title("Contact")
         .id("contactPageSingleton")
         .child(S.editor().schemaType("contactPage").documentId("contactPage").title("Contact")),

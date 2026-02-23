@@ -7,6 +7,13 @@ export const pressItemType = defineType({
   fields: [
     defineField({ name: "title_en", title: "Title (EN)", type: "string", validation: (rule) => rule.required() }),
     defineField({ name: "title_zh", title: "Title (ZH)", type: "string", validation: (rule) => rule.required() }),
+    defineField({
+      name: "slug",
+      title: "Slug",
+      type: "slug",
+      options: { source: "title_en", maxLength: 96 },
+      validation: (rule) => rule.required()
+    }),
     defineField({ name: "summary_en", title: "Summary (EN)", type: "text" }),
     defineField({ name: "summary_zh", title: "Summary (ZH)", type: "text" }),
     defineField({ name: "body_en", title: "Body (EN)", type: "blockContent" }),

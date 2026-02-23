@@ -52,10 +52,12 @@ export const projectBySlugQuery = groq`
     ${baseFields}
   }
 `;
+export const projectsBySlugQuery = projectBySlugQuery;
 
 export const projectSlugsQuery = groq`
   *[_type == "project" && defined(slug.current)][].slug.current
 `;
+export const projectsSlugsQuery = projectSlugsQuery;
 
 //
 // 🧪 RESEARCH
@@ -71,10 +73,12 @@ export const researchPostBySlugQuery = groq`
     ${baseFields}
   }
 `;
+export const researchPostsBySlugQuery = researchPostBySlugQuery;
 
 export const researchPostSlugsQuery = groq`
   *[_type == "researchPost" && defined(slug.current)][].slug.current
 `;
+export const researchPostsSlugsQuery = researchPostSlugsQuery;
 
 //
 // 📰 PRESS
@@ -90,6 +94,24 @@ export const pressItemsQuery = groq`
     relatedProjects[]->{_id, _type, slug, title_en, title_zh}
   }
 `;
+
+export const pressItemBySlugQuery = groq`
+  *[_type == "pressItem" && slug.current == $slug][0]{
+    ${baseFields},
+    outlet,
+    url,
+    publishDate,
+    quote_en,
+    quote_zh,
+    relatedProjects[]->{_id, _type, slug, title_en, title_zh}
+  }
+`;
+export const pressBySlugQuery = pressItemBySlugQuery;
+
+export const pressItemSlugsQuery = groq`
+  *[_type == "pressItem" && defined(slug.current)][].slug.current
+`;
+export const pressSlugsQuery = pressItemSlugsQuery;
 
 //
 // 🎨 EXHIBITIONS
@@ -114,10 +136,12 @@ export const exhibitionBySlugQuery = groq`
     relatedWorks[]->{_id, _type, slug, title_en, title_zh}
   }
 `;
+export const exhibitionsBySlugQuery = exhibitionBySlugQuery;
 
 export const exhibitionSlugsQuery = groq`
   *[_type == "exhibition" && defined(slug.current)][].slug.current
 `;
+export const exhibitionsSlugsQuery = exhibitionSlugsQuery;
 
 //
 // 📚 PUBLICATIONS
@@ -152,3 +176,63 @@ export const publicationBySlugQuery = groq`
 export const publicationSlugsQuery = groq`
   *[_type == "publication" && defined(slug.current)][].slug.current
 `;
+
+//
+// 🎭 IMMERSIVE PERFORMANCES
+//
+export const immersivePerformancesQuery = groq`
+  *[_type == "performance"] | order(coalesce(dateRange.startDate, _createdAt) desc){
+    ${baseFields},
+    dateRange,
+    venue,
+    city,
+    format
+  }
+`;
+
+export const immersivePerformanceBySlugQuery = groq`
+  *[_type == "performance" && slug.current == $slug][0]{
+    ${baseFields},
+    dateRange,
+    venue,
+    city,
+    format
+  }
+`;
+export const immersivePerformancesBySlugQuery = immersivePerformanceBySlugQuery;
+
+export const immersivePerformanceSlugsQuery = groq`
+  *[_type == "performance" && defined(slug.current)][].slug.current
+`;
+export const immersivePerformancesSlugsQuery = immersivePerformanceSlugsQuery;
+
+//
+// 🎤 LECTURES
+//
+export const lecturesQuery = groq`
+  *[_type == "lecture"] | order(coalesce(date, _createdAt) desc){
+    ${baseFields},
+    date,
+    host,
+    slides[]{
+      asset->{url, originalFilename}
+    }
+  }
+`;
+
+export const lectureBySlugQuery = groq`
+  *[_type == "lecture" && slug.current == $slug][0]{
+    ${baseFields},
+    date,
+    host,
+    slides[]{
+      asset->{url, originalFilename}
+    }
+  }
+`;
+export const lecturesBySlugQuery = lectureBySlugQuery;
+
+export const lectureSlugsQuery = groq`
+  *[_type == "lecture" && defined(slug.current)][].slug.current
+`;
+export const lecturesSlugsQuery = lectureSlugsQuery;

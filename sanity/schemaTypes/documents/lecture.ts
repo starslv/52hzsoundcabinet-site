@@ -18,6 +18,14 @@ export const lectureType = defineType({
     defineField({ name: "body_en", title: "Body (EN)", type: "blockContent" }),
     defineField({ name: "body_zh", title: "Body (ZH)", type: "blockContent" }),
 
+    defineField({ name: "coverImage", title: "Cover Image", type: "image", options: { hotspot: true } }),
+    defineField({
+      name: "galleryImages",
+      title: "Gallery Images",
+      type: "array",
+      of: [defineArrayMember({ type: "image", options: { hotspot: true } })]
+    }),
+
     defineField({ name: "slides", title: "Slides / Files", type: "array", of: [defineArrayMember({ type: "file" })] }),
     defineField({ name: "videoEmbeds", title: "Video Embeds", type: "array", of: [defineArrayMember({ type: "url" })] }),
     defineField({ name: "externalLinks", title: "External Links", type: "array", of: [defineArrayMember({ type: "externalLink" })] }),

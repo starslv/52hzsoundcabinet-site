@@ -1,29 +1,16 @@
+export const revalidate = 60;
+
 import type { Metadata } from "next";
-import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { CoverImage, Gallery, VideoEmbeds } from "@/components/media";
-import { ExternalLinks } from "@/components/links";
-import { RichText } from "@/components/rich-text";
-import { localizedBody, localizedText } from "@/lib/content";
+
+import { urlFor } from "@/sanity/lib/image";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 import { languageAlternates } from "@/lib/metadata";
 import { getExhibitionBySlug, getExhibitionSlugs } from "@/lib/sanity/api";
-
-function formatDateRange(startDate?: string, endDate?: string) {
-  if (!startDate && !endDate) return "";
-  if (startDate && endDate) return `${startDate} - ${endDate}`;
-  return startDate || endDate || "";
-}
-
-type RelatedWorkRef = {
-  _id: string;
-  _type: "project" | "researchPost";
-  slug?: { current?: string };
-  title_en?: string;
-  title_zh?: string;
-  summary_en?: string;
-  summary_zh?: string;
-};
+import { localizedBody, localizedText } from "@/lib/content";
+import { RichText } from "@/components/rich-text";
+import { ExternalLinks } from "@/components/links";
 
 export async function generateStaticParams() {
   const slugs = await getExhibitionSlugs();
@@ -31,31 +18,29 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({
-  params,
+  params
 }: {
   params: { lang: string; slug: string };
 }): Promise<Metadata> {
   if (!isLocale(params.lang)) return {};
 
-  const lang = params.lang as Locale;
   const exhibition = await getExhibitionBySlug(params.slug);
+  if (!exhibition) return { title: "Not Found" };
 
-  if (!exhibition) {
-    return { title: "Not Found" };
-  }
+  const lang = params.lang as Locale;
 
   return {
     title: localizedText(exhibition, "title", lang),
     description: localizedText(exhibition, "summary", lang),
     alternates: languageAlternates(lang, `/exhibitions/${params.slug}`),
     openGraph: {
-      url: `https://52hzsoundcabinet.com/${params.lang}/exhibitions/${params.slug}`,
-    },
+      url: `https://52hzsoundcabinet.com/${params.lang}/exhibitions/${params.slug}`
+    }
   };
 }
 
 export default async function ExhibitionDetailPage({
-  params,
+  params
 }: {
   params: { lang: string; slug: string };
 }) {
@@ -63,85 +48,52 @@ export default async function ExhibitionDetailPage({
 
   const lang = params.lang as Locale;
   const exhibition = await getExhibitionBySlug(params.slug);
-
   if (!exhibition) notFound();
 
   const title = localizedText(exhibition, "title", lang);
+  const summary = localizedText(exhibition, "summary", lang);
   const body = localizedBody(exhibition, lang);
-
-  const dateText = formatDateRange(exhibition.dateRange?.startDate, exhibition.dateRange?.endDate);
-  const relatedWorks = (exhibition.relatedWorks ?? []) as RelatedWorkRef[];
 
   return (
     <article>
       <h1>{title}</h1>
 
-      <p className="meta-inline">
-        {exhibition.venue ? <span>{exhibition.venue}</span> : null}
-        {exhibition.location ? <span>{exhibition.location}</span> : null}
-        {exhibition.year ? <span>{String(exhibition.year)}</span> : null}
-        {dateText ? <span>{dateText}</span> : null}
-      </p>
+      {exhibition.coverImage?.asset ? (
+        <div style={{ maxWidth: "720px", margin: "2rem 0" }}>
+          <Image
+            src={urlFor(exhibition.coverImage)
+              .width(720)
+              .height(720)
+              .fit("crop")
+              .auto("format")
+              .url()}
+            alt={title}
+            width={720}
+            height={720}
+            style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+          />
+        </div>
+      ) : null}
 
-      <CoverImage image={exhibition.coverImage} title={title} />
+      {summary ? <p>{summary}</p> : null}
+      {body?.length ? <RichText value={body} /> : null}
 
-      {localizedText(exhibition, "summary", lang) ? <p>{localizedText(exhibition, "summary", lang)}</p> : null}
-
-      <RichText value={body} />
-
-      <Gallery images={exhibition.galleryImages} title={title} />
-      <VideoEmbeds urls={exhibition.videoEmbeds} />
-
-      <section className="panel">
-        <h2>{lang === "zh" ? "展览信息" : "Exhibition Details"}</h2>
-
-        <dl className="meta-list">
-          {exhibition.venue ? (
-            <div>
-              <dt>{lang === "zh" ? "场馆" : "Venue"}</dt>
-              <dd>{exhibition.venue}</dd>
-            </div>
-          ) : null}
-
-          {exhibition.collaborators?.length ? (
-            <div>
-              <dt>{lang === "zh" ? "合作方" : "Collaborators"}</dt>
-              <dd>{exhibition.collaborators.join(", ")}</dd>
-            </div>
-          ) : null}
-
-          {dateText ? (
-            <div>
-              <dt>{lang === "zh" ? "展期" : "Dates"}</dt>
-              <dd>{dateText}</dd>
-            </div>
-          ) : null}
-
-          {relatedWorks.length ? (
-            <div>
-              <dt>{lang === "zh" ? "相关作品" : "Related Works"}</dt>
-              <dd>
-                {relatedWorks.map((work: RelatedWorkRef, index: number) => {
-                  const hrefBase = work._type === "project" ? "projects" : "research";
-                  const label =
-                    lang === "zh" ? work.title_zh || work.title_en : work.title_en || work.title_zh;
-
-                  return (
-                    <span key={work._id}>
-                      {work.slug?.current ? (
-                        <Link href={`/${lang}/${hrefBase}/${work.slug.current}`}>{label}</Link>
-                      ) : (
-                        label
-                      )}
-                      {index < relatedWorks.length - 1 ? ", " : ""}
-                    </span>
-                  );
-                })}
-              </dd>
-            </div>
-          ) : null}
-        </dl>
-      </section>
+      {exhibition.galleryImages?.length ? (
+        <section className="media-grid" aria-label="Gallery">
+          {exhibition.galleryImages.map((img, i) =>
+            img?.asset?._ref ? (
+              <Image
+                key={`${img.asset._ref}-${i}`}
+                src={urlFor(img).width(900).height(600).fit("crop").auto("format").url()}
+                alt={`${title} image ${i + 1}`}
+                width={900}
+                height={600}
+                style={{ width: "100%", height: "auto" }}
+              />
+            ) : null
+          )}
+        </section>
+      ) : null}
 
       <ExternalLinks links={exhibition.externalLinks} />
     </article>

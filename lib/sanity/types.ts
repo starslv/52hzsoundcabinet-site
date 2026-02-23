@@ -67,6 +67,7 @@ export type Project = BaseContent;
 export type ResearchPost = BaseContent;
 
 export type PressItem = BaseContent & {
+  slug?: SanitySlug;
   outlet: string;
   url: string;
   publishDate?: string;
@@ -104,4 +105,20 @@ export type Publication = BaseContent & {
   url?: string;
   authors?: string[];
   file?: SanityFileAsset;
+};
+
+export type ImmersivePerformance = BaseContent & {
+  dateRange?: {
+    startDate?: string;
+    endDate?: string;
+  };
+  venue?: string;
+  city?: string;
+  format?: string;
+};
+
+export type Lecture = BaseContent & {
+  date?: string;
+  host?: string;
+  slides?: SanityFileAsset[];
 };

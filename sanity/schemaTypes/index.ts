@@ -11,7 +11,6 @@ import { lectureType } from "./documents/lecture";
 
 // Document types (single pages)
 import { aboutPageType } from "./documents/aboutPage";
-import { mediaKitPageType } from "./documents/mediaKitPage";
 import { contactPageType } from "./documents/contactPage";
 
 // Object types (used inside documents)
@@ -32,7 +31,6 @@ homePageType,
 
   // Single pages
   aboutPageType,
-  mediaKitPageType,
   contactPageType,
 
   // Objects

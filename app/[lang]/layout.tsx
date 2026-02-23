@@ -16,7 +16,6 @@ const navItems = [
   { href: "/press", label: "Press" },
   { href: "/publications", label: "Publications" },
   { href: "/lectures", label: "Lectures" },
-  { href: "/media-kit", label: "Media Kit" },
   { href: "/contact", label: "Contact" }
 ];
 

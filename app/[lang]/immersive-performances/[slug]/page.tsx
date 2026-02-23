@@ -7,13 +7,13 @@ import { notFound } from "next/navigation";
 import { urlFor } from "@/sanity/lib/image";
 import { isLocale, locales, type Locale } from "@/lib/i18n";
 import { languageAlternates } from "@/lib/metadata";
-import { getResearchPostBySlug, getResearchPostSlugs } from "@/lib/sanity/api";
+import { getImmersivePerformanceBySlug, getImmersivePerformanceSlugs } from "@/lib/sanity/api";
 import { localizedBody, localizedText } from "@/lib/content";
 import { RichText } from "@/components/rich-text";
 import { ExternalLinks } from "@/components/links";
 
 export async function generateStaticParams() {
-  const slugs = await getResearchPostSlugs();
+  const slugs = await getImmersivePerformanceSlugs();
   return locales.flatMap((lang) => slugs.map((slug) => ({ lang, slug })));
 }
 
@@ -24,22 +24,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   if (!isLocale(params.lang)) return {};
 
-  const post = await getResearchPostBySlug(params.slug);
-  if (!post) return { title: "Not Found" };
+  const item = await getImmersivePerformanceBySlug(params.slug);
+  if (!item) return { title: "Not Found" };
 
   const lang = params.lang as Locale;
 
   return {
-    title: localizedText(post, "title", lang),
-    description: localizedText(post, "summary", lang),
-    alternates: languageAlternates(lang, `/research/${params.slug}`),
+    title: localizedText(item, "title", lang),
+    description: localizedText(item, "summary", lang),
+    alternates: languageAlternates(lang, `/immersive-performances/${params.slug}`),
     openGraph: {
-      url: `https://52hzsoundcabinet.com/${params.lang}/research/${params.slug}`
+      url: `https://52hzsoundcabinet.com/${params.lang}/immersive-performances/${params.slug}`
     }
   };
 }
 
-export default async function ResearchDetailPage({
+export default async function ImmersivePerformanceDetailPage({
   params
 }: {
   params: { lang: string; slug: string };
@@ -47,21 +47,21 @@ export default async function ResearchDetailPage({
   if (!isLocale(params.lang)) notFound();
 
   const lang = params.lang as Locale;
-  const post = await getResearchPostBySlug(params.slug);
-  if (!post) notFound();
+  const item = await getImmersivePerformanceBySlug(params.slug);
+  if (!item) notFound();
 
-  const title = localizedText(post, "title", lang);
-  const summary = localizedText(post, "summary", lang);
-  const body = localizedBody(post, lang);
+  const title = localizedText(item, "title", lang);
+  const summary = localizedText(item, "summary", lang);
+  const body = localizedBody(item, lang);
 
   return (
     <article>
       <h1>{title}</h1>
 
-      {post.coverImage?.asset ? (
+      {item.coverImage?.asset ? (
         <div style={{ maxWidth: "720px", margin: "2rem 0" }}>
           <Image
-            src={urlFor(post.coverImage)
+            src={urlFor(item.coverImage)
               .width(720)
               .height(720)
               .fit("crop")
@@ -78,9 +78,9 @@ export default async function ResearchDetailPage({
       {summary ? <p>{summary}</p> : null}
       {body?.length ? <RichText value={body} /> : null}
 
-      {post.galleryImages?.length ? (
+      {item.galleryImages?.length ? (
         <section className="media-grid" aria-label="Gallery">
-          {post.galleryImages.map((img, i) =>
+          {item.galleryImages.map((img, i) =>
             img?.asset?._ref ? (
               <Image
                 key={`${img.asset._ref}-${i}`}
@@ -95,7 +95,7 @@ export default async function ResearchDetailPage({
         </section>
       ) : null}
 
-      <ExternalLinks links={post.externalLinks} />
+      <ExternalLinks links={item.externalLinks} />
     </article>
   );
 }
