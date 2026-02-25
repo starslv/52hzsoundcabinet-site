@@ -4,6 +4,18 @@ export const projectType = defineType({
   name: "project",
   title: "Project",
   type: "document",
+  orderings: [
+    {
+      title: "Year (newest first)",
+      name: "yearDesc",
+      by: [{ field: "year", direction: "desc" }]
+    },
+    {
+      title: "Updated (newest first)",
+      name: "updatedDesc",
+      by: [{ field: "_updatedAt", direction: "desc" }]
+    }
+  ],
   fields: [
     defineField({ name: "title_en", title: "Title (EN)", type: "string", validation: (rule) => rule.required() }),
     defineField({ name: "title_zh", title: "Title (ZH)", type: "string", validation: (rule) => rule.required() }),

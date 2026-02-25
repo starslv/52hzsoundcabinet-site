@@ -4,6 +4,18 @@ export const exhibitionType = defineType({
   name: "exhibition",
   title: "Exhibition",
   type: "document",
+  orderings: [
+    {
+      title: "Year (newest first)",
+      name: "yearDesc",
+      by: [{ field: "year", direction: "desc" }]
+    },
+    {
+      title: "Updated (newest first)",
+      name: "updatedDesc",
+      by: [{ field: "_updatedAt", direction: "desc" }]
+    }
+  ],
 
   fields: [
     defineField({

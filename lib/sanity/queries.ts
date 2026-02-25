@@ -42,7 +42,7 @@ export const homePageQuery = groq`
 // 🎛 PROJECTS
 //
 export const projectsQuery = groq`
-  *[_type == "project"] | order(year desc, _createdAt desc){
+  *[_type == "project"] | order(coalesce(year, dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields}
   }
 `;
@@ -63,7 +63,7 @@ export const projectsSlugsQuery = projectSlugsQuery;
 // 🧪 RESEARCH
 //
 export const researchPostsQuery = groq`
-  *[_type == "researchPost"] | order(year desc, _createdAt desc){
+  *[_type == "researchPost"] | order(coalesce(year, dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields}
   }
 `;
@@ -84,7 +84,7 @@ export const researchPostsSlugsQuery = researchPostSlugsQuery;
 // 📰 PRESS
 //
 export const pressItemsQuery = groq`
-  *[_type == "pressItem"] | order(publishDate desc, _createdAt desc){
+  *[_type == "pressItem"] | order(coalesce(year, dateTime(publishDate), dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields},
     outlet,
     url,
@@ -118,7 +118,7 @@ export const pressSlugsQuery = pressItemSlugsQuery;
 //
 export const exhibitionsQuery = groq`
   *[_type == "exhibition"]
-  | order(coalesce(dateRange.startDate, year) desc, _createdAt desc){
+  | order(coalesce(year, dateTime(dateRange.startDate), dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields},
     venue,
     collaborators,
@@ -148,7 +148,7 @@ export const exhibitionsSlugsQuery = exhibitionSlugsQuery;
 //
 export const publicationsQuery = groq`
   *[_type == "publication"]
-  | order(coalesce(publishDate, year) desc, _createdAt desc){
+  | order(coalesce(year, dateTime(publishDate), dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields},
     publishDate,
     outlet,
@@ -181,7 +181,7 @@ export const publicationSlugsQuery = groq`
 // 🎭 IMMERSIVE PERFORMANCES
 //
 export const immersivePerformancesQuery = groq`
-  *[_type == "performance"] | order(coalesce(dateRange.startDate, _createdAt) desc){
+  *[_type == "performance"] | order(coalesce(year, dateTime(dateRange.startDate), dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields},
     dateRange,
     venue,
@@ -210,7 +210,7 @@ export const immersivePerformancesSlugsQuery = immersivePerformanceSlugsQuery;
 // 🎤 LECTURES
 //
 export const lecturesQuery = groq`
-  *[_type == "lecture"] | order(coalesce(date, _createdAt) desc){
+  *[_type == "lecture"] | order(coalesce(year, dateTime(date), dateTime(_createdAt)) desc, _createdAt desc){
     ${baseFields},
     date,
     host,

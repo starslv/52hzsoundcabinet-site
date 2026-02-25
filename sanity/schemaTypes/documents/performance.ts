@@ -4,10 +4,24 @@ export const performanceType = defineType({
   name: "performance",
   title: "Immersive Performance",
   type: "document",
+  orderings: [
+    {
+      title: "Year (newest first)",
+      name: "yearDesc",
+      by: [{ field: "year", direction: "desc" }]
+    },
+    {
+      title: "Updated (newest first)",
+      name: "updatedDesc",
+      by: [{ field: "_updatedAt", direction: "desc" }]
+    }
+  ],
   fields: [
     defineField({ name: "title_en", title: "Title (EN)", type: "string", validation: (r) => r.required() }),
     defineField({ name: "title_zh", title: "Title (ZH)", type: "string", validation: (r) => r.required() }),
     defineField({ name: "slug", title: "Slug", type: "slug", options: { source: "title_en", maxLength: 96 }, validation: (r) => r.required() }),
+
+    defineField({ name: "year", title: "Year", type: "number" }),
 
     defineField({ name: "dateRange", title: "Date Range", type: "dateRange" }),
     defineField({ name: "venue", title: "Venue", type: "string" }),
